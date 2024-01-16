@@ -4,7 +4,7 @@ exports.createCategories = async (req, res) => {
     const categories = await Category(req.body)
     try{
         const responce = await categories.save()
-        res.status(200).json(categories)
+        res.status(200).json(responce)
     }catch (err) {
         res.status(400).json(err)
     }
