@@ -7,9 +7,7 @@ const orderSchema = new mongoose.Schema({
     user: {type: Schema.Types.ObjectId, ref:"User",  required: true},
     paymentMenthod: {type: String, required: true},
     status: {type: String, default: 'pending'},
-    selectedAddres: {type: [Schema.Types.Mixed], required: true},
-    
-
+    selectedAddress: {type: Schema.Types.Mixed, required: true},
 })
 const virtual = orderSchema.virtual('id')
 virtual.get(function(){
