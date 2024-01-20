@@ -19,7 +19,7 @@ exports.createUser = async (req, res) => {
                         token, 
                         { expires: new Date(Date.now() + 3600000), 
                           httpOnly: true 
-                        }).status(201).json(token)
+                        }).status(201).json({id:responce.id, role:responce.role})
                 }
             })
         })
@@ -36,6 +36,11 @@ exports.loginUser = async (req, res) => {
           httpOnly: true 
         }).status(201).json(req.user.token)
 }
-exports.checkUser = async (req, res) => {
-    res.json(req.user)
+
+exports.checkAuth = async (req, res) => {
+    if(req.user){
+        res.json(req.user)
+    }else{
+        res.sendStatus(401)
+    }
 }
