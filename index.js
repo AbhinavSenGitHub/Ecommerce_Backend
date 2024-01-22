@@ -1,4 +1,4 @@
-require("dotenv").config()
+require('dotenv').config();
 const express = require("express")
 const server = express()
 const mongoose = require("mongoose")
@@ -21,11 +21,11 @@ const JwtStrategy = require('passport-jwt').Strategy
 const ExtractJwt = require('passport-jwt').ExtractJwt
 const { isAuth, sanitizeUser, cookieExtractor } = require("./services/common");
 const cookieParser = require("cookie-parser");
-const SECRET_KEY = "SECRET_KEY"
-const token = jwt.sign({ foo: 'bar' }, SECRET_KEY);
+
+const token = jwt.sign({ foo: 'bar' }, process.env.JWT_SECRET_KEY);
 const path = require('path');
 // This is your Stripe CLI webhook secret for testing your endpoint locally.
-const endpointSecret = "whsec_b10546b7dabc7c0e138f8f2b688a9725928692aa7030d65f774ceaa9e8e314cc";
+const endpointSecret = process.env.ENDPOINT_SECRET;
 
 server.post('/webhook', express.raw({type: 'application/json'}), (request, response) => {
   const sig = request.headers['stripe-signature'];
@@ -58,13 +58,13 @@ server.post('/webhook', express.raw({type: 'application/json'}), (request, respo
 //Passport jwt
 const opts = {}
 opts.jwtFromRequest = cookieExtractor;
-opts.secretOrKey = SECRET_KEY
+opts.secretOrKey = process.env.JWT_SECRET_KEY
 
 // middleware
 server.use(express.static(path.resolve(__dirname,'build')))
 server.use(cookieParser())
 server.use(session({
-  secret: 'keyboard cat',
+  secret: process.env.SESSION_KEY,
   resave: false, // don't save session if unmodified
   saveUninitialized: false, // don't create session until something stored
 }))
@@ -98,7 +98,7 @@ passport.use('local', new LocalStrategy({usernameField: 'email'}, async function
         if (!crypto.timingSafeEqual(user.password, hashedPassword)) {
           return done(null, false, { message: "Invalid Credentials" })
         }
-        const token = jwt.sign(sanitizeUser(user), SECRET_KEY);
+        const token = jwt.sign(sanitizeUser(user), process.env.JWT_SECRET_KEY);
         done(null, {id:user.id, role:user.role, token})   //this line call the serialization function
       })
 
@@ -140,7 +140,7 @@ passport.deserializeUser(function (user, cb) {
 //payment intent
 
 // This is your test secret API key.
-const stripe = require("stripe")('sk_test_51OahPxSHuRUvcM7lFN7MT2v4U3uD0hVsWH0dIY99nuq8rPijWcDo8S9n0MSO2K6PYhpXVkbzXn5vdfpJW2HomM9W00ZzdxDOHB');
+const stripe = require("stripe")(process.env.STRIPE_SERVER_KEY);
 
 server.post("/create-payment-intent", async (req, res) => {
   const { totalAmount } = req.body;
@@ -162,7 +162,7 @@ server.post("/create-payment-intent", async (req, res) => {
 //connection for database
 main().catch(err => console.error(err))
 async function main() {   //mongodb://localhost:27017/ecommerce
-  await mongoose.connect("mongodb+srv://abhinavsen987:oVgQEYGiwagf5NRd@cluster0.hgobvkh.mongodb.net/ecommerce?retryWrites=true&w=majority"); 
+  await mongoose.connect(process.env.MONGODB_URL); 
   console.log("Connected to the database");
 }
 
@@ -170,7 +170,7 @@ server.get("/", (req, res) => {
   res.json({ status: "success" })
 })
 
-
-server.listen(process.env.PORT || 8080, () => {
+server.listen(process.env.PORT, () => {
   console.log("server stated on port 8080")
+  console.log("env:- " + {process})
 })
