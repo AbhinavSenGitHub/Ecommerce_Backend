@@ -79,7 +79,7 @@ server.use("/users", isAuth(), usersRouter.router)
 server.use("/auth", authRouter.router)
 server.use("/cart", isAuth(), cartRouter.router)
 server.use("/orders", isAuth(), orderRouter.router)
-server.get('*', (req, res) => res.sendFile(path. resolve('build', 'index.html')));
+server.get('*', (req, res) => res.sendFile(path.resolve('build', 'index.html')));
 
 // passport Strategies
 passport.use('local', new LocalStrategy({usernameField: 'email'}, async function (email, password, done) {
@@ -153,7 +153,7 @@ server.post("/create-payment-intent", async (req, res) => {
     automatic_payment_methods: {
       enabled: true,
     },
-    metadata: {
+    metadata:{
       orderId
     }
   });
