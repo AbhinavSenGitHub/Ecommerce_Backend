@@ -1,9 +1,17 @@
 const { Order } = require("../model/Order")
 const { sendMail, invoiceTemplate } = require("../services/common")
 const { User } = require("../model/User")
+const { Product } = require("../model/Product")
 
 exports.createOrder = async (req, res) => {
     const order = new Order(req.body)
+
+    //here we have updated the stock
+    for(let item of order.items){
+      let product = await Product.findOne({_id:item.product.id})
+      product.$inc('stock',-1*item.quantity)
+      await product.save()
+    }
     try{
         const doc = await order.save()
         const user = await User.findById(order.user)
