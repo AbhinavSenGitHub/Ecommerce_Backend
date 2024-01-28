@@ -5,6 +5,7 @@ const mongoose = require("mongoose")
 const jwt = require('jsonwebtoken');
 const cors = require("cors")
 const productsRouter = require("./routes/Products")
+
 const categoriesRouter = require("./routes/Categories")
 const brandsRouter = require("./routes/Brands")
 const usersRouter = require("./routes/Users")
@@ -27,9 +28,10 @@ const { Order } = require('./model/Order');
 // This is your Stripe CLI webhook secret for testing your endpoint locally.
 const endpointSecret = process.env.ENDPOINT_SECRET;
 
-server.post('/webhook', express.raw({type: 'application/json'}), async (request, response) => {
+
+server.post('/webhook', express.raw({ type: 'application/json' }), async (request, response) => {
   const sig = request.headers['stripe-signature'];
-   
+
   let event;
 
   try {
@@ -62,7 +64,7 @@ opts.jwtFromRequest = cookieExtractor;
 opts.secretOrKey = process.env.JWT_SECRET_KEY
 
 // middleware
-server.use(express.static(path.resolve(__dirname,'build')))
+server.use(express.static(path.resolve(__dirname, 'build')))
 server.use(cookieParser())
 server.use(session({
   secret: 'your-secret-key',
@@ -84,7 +86,7 @@ server.use("/orders", isAuth(), orderRouter.router)
 server.get('*', (req, res) => res.sendFile(path.resolve('build', 'index.html')));
 
 // passport Strategies
-passport.use('local', new LocalStrategy({usernameField: 'email'}, async function (email, password, done) {
+passport.use('local', new LocalStrategy({ usernameField: 'email' }, async function (email, password, done) {
   try {
     const user = await User.findOne({ email: email }).exec()
     if (!user) {
@@ -101,7 +103,7 @@ passport.use('local', new LocalStrategy({usernameField: 'email'}, async function
           return done(null, false, { message: "Invalid Credentials" })
         }
         const token = jwt.sign(sanitizeUser(user), process.env.JWT_SECRET_KEY);
-        done(null, {id:user.id, role:user.role, token})   //this line call the serialization function
+        done(null, { id: user.id, role: user.role, token })   //this line call the serialization function
       })
 
   } catch (err) {
@@ -149,13 +151,13 @@ server.post("/create-payment-intent", async (req, res) => {
 
   // Create a PaymentIntent with the order amount and currency
   const paymentIntent = await stripe.paymentIntents.create({
-    amount: totalAmount*100,
+    amount: totalAmount * 100,
     currency: "inr",
     // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
     automatic_payment_methods: {
       enabled: true,
     },
-    metadata:{
+    metadata: {
       orderId
     }
   });
@@ -167,7 +169,7 @@ server.post("/create-payment-intent", async (req, res) => {
 //connection for database
 main().catch(err => console.error(err))
 async function main() {   //mongodb://localhost:27017/ecommerce
-  await mongoose.connect(process.env.MONGODB_URL); 
+  await mongoose.connect(process.env.MONGODB_URL);
   console.log("Connected to the database");
 }
 
@@ -177,5 +179,5 @@ server.get("/", (req, res) => {
 
 server.listen(process.env.PORT, () => {
   console.log("server stated on port 8080")
-  console.log("env:- " + {process})
+  console.log("env:- " + { process })
 })
