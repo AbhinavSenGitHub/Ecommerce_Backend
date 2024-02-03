@@ -172,11 +172,12 @@ async function main() {   //mongodb://localhost:27017/ecommerce
   await mongoose.connect(process.env.MONGODB_URL);
   console.log("Connected to the database");
 }
-//
+//starting 
 server.get("/", (req, res) => {
   res.json({ status: "success" })
 })
 
+// PORT 
 server.listen(process.env.PORT, () => {
   console.log("server stated on port 8080")
   console.log("env:- " + { process })
