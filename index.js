@@ -172,7 +172,7 @@ async function main() {   //mongodb://localhost:27017/ecommerce
   await mongoose.connect(process.env.MONGODB_URL);
   console.log("Connected to the database");
 }
-
+//
 server.get("/", (req, res) => {
   res.json({ status: "success" })
 })
