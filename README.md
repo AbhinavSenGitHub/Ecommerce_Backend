@@ -1,10 +1,15 @@
 E-Commerce Platform README
 
 Welcome to our E-Commerce Platform! This platform is designed to provide a seamless online shopping experience. Below, you'll find essential information to get started.
-## Website Link
 
+## Project Video Link
 <div>
-  <a href="https://ecommerce-backend-sigma-eight.vercel.app/login">Link to website</a>
+  <a href="https://www.linkedin.com/feed/update/urn:li:activity:7159596805557567488/">Project Video</a>
+</div>
+
+## Website Link
+<div>
+  <a href="https://ecommerce-backend-sigma-eight.vercel.app/login">Website Link</a>
 </div>
 
 ## Project Demo  
